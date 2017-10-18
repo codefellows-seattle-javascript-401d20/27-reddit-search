@@ -1,18 +1,22 @@
 'use strict'
 
-const HTMLPlugin = require('html-webpack-plugin');
+const HTMLPlugin = require('html-webpack-plugin')
 const ExtractPlugin = require('extract-text-webpack-plugin')
+
 module.exports = {
   entry: `${__dirname}/src/main.js`,
   devtool: 'cheap-eval-source-map',
   output: {
     path: `${__dirname}/build`,
-    filename: 'bundle.[hash].js'
+    filename: 'bundle.[hash].js',
   },
+
   plugins: [
-    new HTMLPlugin(),
+    new HTMLPlugin({
+      title: 'Reddit Reader',
+    }),
     new ExtractPlugin('bundle.[hash].css'),
-  ],
+  ], 
   module: {
     rules: [
       {
@@ -26,8 +30,10 @@ module.exports = {
             loader: 'sass-loader',
             options: {
               sourceMap: true,
+              includePaths: [`${__dirname}/src/style`],
             },
-          }],
+          },
+          ],
         }),
       },
     ],
