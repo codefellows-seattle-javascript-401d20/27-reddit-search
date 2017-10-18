@@ -5,7 +5,6 @@ import './style/main.scss'
 import React from 'react'
 import ReactDom from 'react-dom'
 import superagent from 'superagent'
-import cors from 'cors'
 
 let searchFormBoard = 'hot'
 let searchFormLimit = 4
@@ -20,7 +19,7 @@ class App extends React.Component {
 
   componentWillMount() {
     console.log('will mount')
-    superagent.get(`http://reddit.com/r/${searchFormBoard}.json?limit=${searchFormLimit}`)
+    superagent.get(`https://www.reddit.com/r/${searchFormBoard}.json?limit=${searchFormLimit}`)
       .then(response => {
         console.log({response})
         let data = response
