@@ -1,6 +1,9 @@
 $primary-color: brown;
+$text-color: white;
 
 body {
   background-color: $primary-color;
-  color: white;
+  color: $text-color;
 }
+
+a { color: $text-color; }

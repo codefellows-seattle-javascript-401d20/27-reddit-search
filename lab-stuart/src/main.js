@@ -40,8 +40,11 @@ class App extends React.Component {
     e.preventDefault();
     superagent.get(`http://www.reddit.com/r/${this.state.board}.json?limit=${this.state.limit}`)
     .then(res => {
-      if(res.text) {
-        this.setState({ topics: res.text });
+      if(res.body.data) {
+        console.log(res.body.data)
+        let {children} = res.body.data;
+        let searchResults = children.map(child => child.data);
+        this.setState({ topics: searchResults });
       }
     })
     .catch(console.error);
@@ -102,7 +105,14 @@ class SearchResultsList extends React.Component {
   render() {
     return (
       <ul>
-      {this.props.topics}
+        {this.props.topics.map((topic, i) =>
+          <li key={i}>
+            <a href={topic.url}>
+              <heading> {topic.title} </heading>
+              <p> {topic.ups} </p>
+            </a>
+          </li>
+        )}
       </ul>
     )
   }
