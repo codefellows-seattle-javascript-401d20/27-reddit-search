@@ -38,27 +38,31 @@ class App extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    superagent.get(`https://reddit.com/r/${this.state.board}.json?limit=${this.state.limit}`)
+    superagent.get(`http://www.reddit.com/r/${this.state.board}.json?limit=${this.state.limit}`)
     .then(res => {
-      if(res.body.results)
-        this.setState({ topics: res.body.results });
+      if(res.text) {
+        this.setState({ topics: res.text });
+      }
     })
     .catch(console.error);
   }
 
-  componentDidUpdate(){
+  componentDidUpdate() {
     console.log('__STATE__', this.state)
   }
 
-  render(){
+  render() {
     return (
-      <SearchForm
-        board={this.state.board}
-        limit={this.state.limit}
-        handleBoard={this.handleBoard}
-        handleLimit={this.handleLimit}
-        handleSubmit={this.handleSubmit}
-      />
+      <div>
+        <SearchForm
+          board={this.state.board}
+          limit={this.state.limit}
+          handleBoard={this.handleBoard}
+          handleLimit={this.handleLimit}
+          handleSubmit={this.handleSubmit}
+        />
+        <SearchResultsList topics={this.state.topics} />
+      </div>
     )
   }
 
@@ -69,7 +73,7 @@ class SearchForm extends React.Component {
     super(props)
   }
 
-  render(){
+  render() {
     return (
       <form onSubmit={this.props.handleSubmit}>
         <input
@@ -86,6 +90,20 @@ class SearchForm extends React.Component {
         <br />
         <input type="submit" value="Submit" />
       </form>
+    )
+  }
+}
+
+class SearchResultsList extends React.Component {
+  constructor(props){
+    super(props)
+  }
+
+  render() {
+    return (
+      <ul>
+      {this.props.topics}
+      </ul>
     )
   }
 }
