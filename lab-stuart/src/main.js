@@ -56,7 +56,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
+      <main>
         <SearchForm
           board={this.state.board}
           limit={this.state.limit}
@@ -65,10 +65,9 @@ class App extends React.Component {
           handleSubmit={this.handleSubmit}
         />
         <SearchResultsList topics={this.state.topics} />
-      </div>
+      </main>
     )
   }
-
 }
 
 class SearchForm extends React.Component {
