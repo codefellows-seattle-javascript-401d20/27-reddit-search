@@ -4,6 +4,8 @@
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
+    "watch": "webpack-dev-server --inline --hot",
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -24,6 +26,7 @@
     "react-dom": "^16.0.0",
     "resolve-url-loader": "^2.1.1",
     "sass-loader": "^6.0.6",
+    "superagent": "^3.6.3",
     "webpack": "^3.8.1",
     "webpack-dev-server": "^2.9.2"
   }
