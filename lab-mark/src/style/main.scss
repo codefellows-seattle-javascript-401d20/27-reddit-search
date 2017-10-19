@@ -1,0 +1,14 @@
+$color-primary: #aa0;
+$color-error: red;
+
+html, body {
+  background: $color-primary;
+}
+
+input {
+  border: 2px solid black;
+}
+
+.error {
+  border-color: $color-error;
+}
