@@ -6,8 +6,23 @@ import React from 'react'
 import ReactDom from 'react-dom'
 import superagent from 'superagent'
 
-let searchFormBoard = 'hot'
+let searchFormBoard = 'magic'
 let searchFormLimit = 4
+
+class RedditItem extends React.Component {
+  constructor(props){
+    super(props)
+  }
+  render() {
+    return (
+      <li>
+        <p>READ: {this.props.redditBoard.data.title}</p>
+        <p>Author: {this.props.redditBoard.data.author}</p>
+        <p>{this.props.redditBoard.data.url}</p>
+      </li>
+    )
+  }
+}
 
 class App extends React.Component {
   constructor(props){
@@ -18,33 +33,28 @@ class App extends React.Component {
   }
 
   componentWillMount() {
-    console.log('will mount')
     superagent.get(`https://www.reddit.com/r/${searchFormBoard}.json?limit=${searchFormLimit}`)
       .then(response => {
+        this.setState({redditBoard: response.body.data.children})
         console.log({response})
-        let data = response
-        if(data)
-          this.setState({redditBoard: this.body.data})
       })
       .catch(console.error)
-  }
-
-  componenetDidUpdate() {
-    console.log('__STATE__::', this.state)
   }
 
   render() {
     return (
       <div>
-        <h1> Reddit Search </h1>
+        <h1>Reddit Search</h1>
         <ul>
-          {this.state.redditBoard.map((redditBoard, i) => {
-
-          })}
+          {this.state.redditBoard.map((redditBoard, i) =>
+            <RedditItem redditBoard={redditBoard} key = {i} />
+          )}
         </ul>
       </div>
     )
   }
 }
 
-ReactDom.render(<App />, root)
+let container = document.createElement('div')
+document.body.appendChild(container)
+ReactDom.render(<App />, container)
