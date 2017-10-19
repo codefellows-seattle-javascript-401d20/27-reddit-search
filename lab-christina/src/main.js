@@ -9,6 +9,25 @@ import superagent from 'superagent'
 let searchFormBoard = 'magic'
 let searchFormLimit = 4
 
+class searchForm extends React.Component {
+  constructor(props){
+    super(props)
+    this.state = {searchValue: ''}
+
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  handleChange(event) {
+    this.setState({searchValue: event.target.value})
+  }
+
+  handleSubmit(event) {
+    event.preventDefault()
+    console.log(this.state.value)
+  }
+}
+
 class RedditItem extends React.Component {
   constructor(props){
     super(props)
@@ -45,6 +64,14 @@ class App extends React.Component {
     return (
       <div>
         <h1>Reddit Search</h1>
+        <form onSubmit={this.handleSubmit}>
+          <label>
+        Search:
+          </label>
+          <input type='text' value={this.state.value}
+            onChange={this.handleChange} />
+          <input type='submit' value='submit' />
+        </form>
         <ul>
           {this.state.redditBoard.map((redditBoard, i) =>
             <RedditItem redditBoard={redditBoard} key = {i} />
