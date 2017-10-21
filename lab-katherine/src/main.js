@@ -7,8 +7,8 @@ class SearchResultList extends React.Component {
     let topics = this.props.topics
     return (
       <ul>
-        {topics.map(result =>
-          <li>
+        {topics.map((result, i) =>
+          <li key={i}>
             <p> {result.title} </p>
             <p> up votes: {result.ups} </p>
             <a href={result.url}> click me </a>
@@ -26,6 +26,7 @@ class SearchForm extends React.Component {
       searchFormBoard: '',
       searchFormLimit: '',
     }
+
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
@@ -33,11 +34,13 @@ class SearchForm extends React.Component {
   handleSubmit(e){
     e.preventDefault()
     this.props.onComplete(this.state)
+    return this.setState({searchFormBoard: '', searchFormLimit: ''})
   }
 
   handleChange(e){
-    let {name, value} = e.target
-    this.setState({[name]: value})
+    let {name, value, type} = e.target
+    value = type === 'number' ? Number(value) : value
+    return this.setState({[name]: value})
   }
 
   render(){
@@ -53,7 +56,10 @@ class SearchForm extends React.Component {
         <input
           type='number'
           name='searchFormLimit'
-          placeholder='number to view'
+          placeholder='number (limit 0-100)'
+          min='0'
+          max='100'
+          step='any'
           value={this.state.searchFormLimit}
           onChange={this.handleChange}
           />
