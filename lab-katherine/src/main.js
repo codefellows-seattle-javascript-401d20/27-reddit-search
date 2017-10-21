@@ -24,7 +24,7 @@ class SearchForm extends React.Component {
     super(props)
     this.state = {
       searchFormBoard: '',
-      searchFormLimit: '',
+      searchFormLimit: 0,
     }
 
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -34,13 +34,16 @@ class SearchForm extends React.Component {
   handleSubmit(e){
     e.preventDefault()
     this.props.onComplete(this.state)
-    return this.setState({searchFormBoard: '', searchFormLimit: ''})
+    this.setState({searchFormBoard: '', searchFormLimit: 0})
   }
 
   handleChange(e){
     let {name, value, type} = e.target
     value = type === 'number' ? Number(value) : value
-    return this.setState({[name]: value})
+    console.log('value: ', value)
+    console.log('typeof value: ', typeof value)
+    console.log('this.state: ', this.state)
+    this.setState({[name]: value})
   }
 
   render(){
