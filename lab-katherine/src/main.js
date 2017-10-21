@@ -2,79 +2,106 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import superagent from 'superagent'
 
-class Header extends React.Component {
-  render() {
+class SearchResultList extends React.Component {
+  render(){
+    let topics = this.props.topics
     return (
-        <div>
-          <header>
-            <h1> Reddit Search </h1>
-          </header>
-        </div>
-      )
+      <ul>
+        {topics.map(result =>
+          <li>
+            <p> {result.title} </p>
+            <p> up votes: {result.ups} </p>
+            <a href={result.url}> click me </a>
+          </li>
+        )}
+      </ul>
+    )
   }
 }
 
-// class App should contain all of the application state
-// should contain methods for modifying the application state
-// the state should have a topics array for holding the results of the search
+class SearchForm extends React.Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      searchFormBoard: '',
+      searchFormLimit: '',
+    }
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+  }
+
+  handleSubmit(e){
+    e.preventDefault()
+    this.props.onComplete(this.state)
+  }
+
+  handleChange(e){
+    let {name, value} = e.target
+    this.setState({[name]: value})
+  }
+
+  render(){
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <input
+          type='text'
+          name='searchFormBoard'
+          placeholder='topic'
+          value={this.state.searchFormBoard}
+          onChange={this.handleChange}
+          />
+        <input
+          type='number'
+          name='searchFormLimit'
+          placeholder='number to view'
+          value={this.state.searchFormLimit}
+          onChange={this.handleChange}
+          />
+        <button type='submit'> search </button>
+      </form>
+    )
+  }
+}
+
 class App extends React.Component {
   constructor(props){
     super(props)
-    console.log(props)
     this.state = {
       topics: [],
     }
-    this.handleTopics = this.topics.bind(this)
+
+    this.searchReddit = this.searchReddit.bind(this)
+  }
+
+  searchReddit(searchFormBoard, searchFormLimit){
+    return superagent.get(`https://www.reddit.com/r/${searchFormBoard}.json?limit=${searchFormLimit}`)
+    .then(res => {
+      let {children} = res.body.data
+      let topics = children.map(child => child.data)
+      return this.setState({topics})
+    })
+    .catch(console.error)
+  }
+
+  componentWillMount(){
+    this.searchReddit('puppies', 5)
   }
 
   componentDidUpdate(){
     console.log('__STATE__', this.state)
   }
 
-  handleTopics(topics){
-    this.setState(
-      {topics: topics}
+  render(){
+    return (
+      <main >
+        <h1> reddit search </h1>
+        <SearchForm onComplete={this.searchReddit} />
+        <SearchResultList topics={this.state.topics} />
+      </main>
     )
   }
-
-    render(){
-      return(
-        <div>
-          <Header />
-          <SearchForm />
-          <SearchResultList />
-          <ul>
-           {this.state.topics.map((topics, i) =>
-             <TopicsItem
-               topics={topics}
-               changeTopicName={this.changeTopicName}
-               updateTopics={this.updateTopic}
-               key={i} />
-           )}
-          </ul>
-        </div>
-      )
-    }
 }
 
-// class SearchForm should contain a text input for the user to supply a reddit board to look up
-// should contain a number input for the user to limit the number of results to return
-// the number must be less than 0 and greater than 100
-// onSubmit the form should make a request to reddit
-// it should make a get request to http://reddit.com/r/${searchFormBoard}.json?limit=${searchFormLimit}
-// on success it should pass the results to the application state
-// on failure it should add a class to the form called error and turn the form's inputs borders red
-
-// class SearchResultList should inherit all search results through props
-// This component does not need to have its own state!
-// If there are topics in the application state it should display the unordered list
-// Each list item in the unordered list should contain the following
-  // an anchor tag with a href to the topic.url
-    // inside the anchor a heading tag with the topic.title
-    // inside the anchor a p tag with the number of topic.ups
-
-// create reference to a dom node on the body
-// to mount the app
 let container = document.createElement('div')
-document.body.appendChild(container)
+document.body.append(container)
 ReactDOM.render(<App />, container)
