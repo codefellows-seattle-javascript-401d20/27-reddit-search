@@ -16,28 +16,29 @@ class Header extends React.Component {
   }
 }
 
-
 class SearchForm extends React.Component {
-
   constructor(props) {
     super(props)
+    this.state
+
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-
-
   }
 
   handleChange(e) {
     let { name, value, type } = e.target
-    // value = type === 'number' ? Number(value) : value
+    value = type === 'number' ? Number(value) : value
     this.setState({ [name]: value })
   }
 
 
   handleSubmit(e) {
     e.preventDefault()
+    let topic = e.target.topic.value
+    let limit = e.target.limit.value
 
-    let { topic, limit, boardList } = this.props
+
+    let { boardList } = this.props
     superagent.get(`https://www.reddit.com/r/${topic}.json?limit=${limit}`)
       .then(res => {
         if (res.body) {
@@ -58,16 +59,16 @@ class SearchForm extends React.Component {
       <form onSubmit={this.handleSubmit}>
         <input
           type='text'
-          value={this.props.topic}
+          name='topic'
           placeholder='Search Topic'
-          onChange={this.handleChange}
         />
 
         <input
           type='number'
-          // value={}
+          name='limit'
           placeholder='Limit'
         />
+
         <button type='submit'>Search</button>
       </form>
     )
@@ -78,8 +79,7 @@ class SearchResultList extends React.Component {
   constructor(props) {
     super(props)
   }
-
-
+  
   render() {
     console.log('topic:', this.props.boardList)
     return (
@@ -104,9 +104,10 @@ class App extends React.Component {
     super(props)
     this.state = {
       boardList: [],
-      limit: 10,
-      topic: 'aww',
+      // limit: 10,
+      // topic: 'aww',
     }
+    this.onComplete = this.onComplete.bind(this)
   }
 
   componentDidMount() {
@@ -117,6 +118,10 @@ class App extends React.Component {
     console.log('will mount')
   }
 
+  onComplete(boardList) {
+    this.setState({ boardList })
+  }
+
   render() {
     let { boardList, topic, limit } = this.state
 
@@ -125,8 +130,9 @@ class App extends React.Component {
 
         <Header />
         <SearchForm
-          topic={topic}
-          limit={limit}
+          // topic={topic}
+          // limit={limit}
+          onComplete={this.onComplete}
           boardList={boardList}
         />
         < SearchResultList
