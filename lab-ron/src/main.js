@@ -5,8 +5,6 @@ import superagent from 'superagent'
 
 const apiURL = 'https://www.reddit.com/r/programming.json'
 
-let searchFormBoard = 'aww'
-let searchFormLimit = 10
 
 class Header extends React.Component {
   render() {
@@ -18,50 +16,137 @@ class Header extends React.Component {
   }
 }
 
-class App extends React.Component {
+
+class SearchForm extends React.Component {
+
   constructor(props) {
     super(props)
-    this.state = {
-      redditBoard: [],
-    }
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+
+
   }
 
-  componentDidMount() {
-    console.log('will mount')
-    superagent.get(`https://www.reddit.com/r/${searchFormBoard}.json?limit=${searchFormLimit}`)
-      // .send({'limit': 100})
+  handleChange(e) {
+    let { name, value, type } = e.target
+    // value = type === 'number' ? Number(value) : value
+    this.setState({ [name]: value })
+  }
+
+
+  handleSubmit(e) {
+    e.preventDefault()
+
+    let { topic, limit, boardList } = this.props
+    superagent.get(`https://www.reddit.com/r/${topic}.json?limit=${limit}`)
       .then(res => {
-        if (res.body)
-          this.setState({ redditBoard: res.body.data.children.map(post => post.data) })
+        if (res.body) {
+          let result = res.body.data.children.map(post => post.data)
+          this.setState({ boardList: result })
+        }
       })
       .catch(console.error)
   }
 
   componentDidUpdate() {
-
-    // const { author, title, url } = this.state.redditBoard
-    console.log('STATE: ', this.state.redditBoard)
-    // console.log(author, title, url)
+    console.log('--> NEW STATE', this.state)
   }
 
   render() {
+    // console.log('--PROPS:', this.props)
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <input
+          type='text'
+          value={this.props.topic}
+          placeholder='Search Topic'
+          onChange={this.handleChange}
+        />
+
+        <input
+          type='number'
+          // value={}
+          placeholder='Limit'
+        />
+        <button type='submit'>Search</button>
+      </form>
+    )
+  }
+}
+
+class SearchResultList extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+
+  render() {
+    console.log('topic:', this.props.boardList)
+    return (
+      <ul>
+        {this.props.boardList.map((post, i) => {
+          let { author, title, url, selftext_html } = post
+          let image = post.preview.images[0].source.url
+          return <li>
+            {author}<br />
+            <a href={url} target="_blank" >{title}</a>
+            <p>{selftext_html}</p>
+            <img src={image} />
+          </li>
+        })}
+      </ul>
+    )
+  }
+}
+
+class App extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      boardList: [],
+      limit: 10,
+      topic: 'aww',
+    }
+  }
+
+  componentDidMount() {
+    console.log('did mount')
+  }
+
+  componentWillMount() {
+    console.log('will mount')
+  }
+
+  render() {
+    let { boardList, topic, limit } = this.state
+
     return (
       <div>
+
         <Header />
-        <ul>
-          {this.state.redditBoard.map((post, i) => {
+        <SearchForm
+          topic={topic}
+          limit={limit}
+          boardList={boardList}
+        />
+        < SearchResultList
+          boardList={boardList}
+        />
+
+
+
+        {/* <ul>
+          {this.state.boardList.map((post, i) => {
             let { author, title, url, selftext_html } = post
             let image = post.preview.images[0].source.url
             return <li>
               {author}<br />
               <a href={url} target="_blank" >{title}</a>
               <p>{selftext_html}</p>
-
-  
               <img src={image} />
             </li>
           })}
-        </ul>
+        </ul> */}
       </div>
     )
   }
