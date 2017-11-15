@@ -20,8 +20,8 @@ class SearchForm extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      topic: 'programming',
-      limit: 0,
+      topic: 'aww',
+      limit: 5,
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -78,12 +78,23 @@ class SearchForm extends React.Component {
 class SearchResultList extends React.Component {
   render() {
     console.log(this.props.boardList)
-
     return (
       <ul>
         {this.props.boardList.map((post, i) => {
-          console.log('post', post)
-          return <li> lul </li>
+          console.log(post)
+          let { url, title, ups, author } = post
+          let image = post.preview ? post.preview.images[0].source.url : undefined
+          console.log(image)
+          return (
+            <li key={i}>
+              <h3>{title}</h3>
+              <a href={url}>Click here</a>
+              <p>
+                {image ? <img src={image} /> : undefined}
+              </p>
+              <p>up votes: {ups}</p><p> u/{author}</p>
+            </li>
+          )
         })}
       </ul>
     )
@@ -118,6 +129,8 @@ class App extends React.Component {
 let container = document.createElement('div')
 document.body.appendChild(container)
 ReactDOM.render(<App />, container)
+
+
 
 
 /*
