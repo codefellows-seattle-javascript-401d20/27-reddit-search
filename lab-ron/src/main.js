@@ -19,7 +19,10 @@ class Header extends React.Component {
 class SearchForm extends React.Component {
   constructor(props) {
     super(props)
-    this.state
+    this.state = {
+      topic: 'programming',
+      limit: 0,
+    }
 
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -34,38 +37,35 @@ class SearchForm extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault()
-    let topic = e.target.topic.value
-    let limit = e.target.limit.value
-
-
-    let { boardList } = this.props
+    let { topic, limit } = this.state
     superagent.get(`https://www.reddit.com/r/${topic}.json?limit=${limit}`)
       .then(res => {
         if (res.body) {
           let result = res.body.data.children.map(post => post.data)
-          this.setState({ boardList: result })
+          this.props.onComplete(result)
+
         }
       })
       .catch(console.error)
   }
 
-  componentDidUpdate() {
-    console.log('--> NEW STATE', this.state)
-  }
-
   render() {
-    // console.log('--PROPS:', this.props)
+
     return (
       <form onSubmit={this.handleSubmit}>
         <input
           type='text'
           name='topic'
+          value={this.state.topic}
+          onChange={this.handleChange}
           placeholder='Search Topic'
         />
 
         <input
           type='number'
           name='limit'
+          value={this.state.limit}
+          onChange={this.handleChange}
           placeholder='Limit'
         />
 
@@ -76,23 +76,15 @@ class SearchForm extends React.Component {
 }
 
 class SearchResultList extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-  
   render() {
-    console.log('topic:', this.props.boardList)
+    console.log(this.props.boardList)
+
     return (
+
       <ul>
         {this.props.boardList.map((post, i) => {
-          let { author, title, url, selftext_html } = post
-          let image = post.preview.images[0].source.url
-          return <li>
-            {author}<br />
-            <a href={url} target="_blank" >{title}</a>
-            <p>{selftext_html}</p>
-            <img src={image} />
-          </li>
+          console.log('post', post)
+          return <li> lul </li>
         })}
       </ul>
     )
@@ -104,55 +96,21 @@ class App extends React.Component {
     super(props)
     this.state = {
       boardList: [],
-      // limit: 10,
-      // topic: 'aww',
     }
-    this.onComplete = this.onComplete.bind(this)
+
+    this.handleComplete = this.handleComplete.bind(this)
   }
 
-  componentDidMount() {
-    console.log('did mount')
-  }
-
-  componentWillMount() {
-    console.log('will mount')
-  }
-
-  onComplete(boardList) {
+  handleComplete(boardList) {
     this.setState({ boardList })
   }
 
   render() {
-    let { boardList, topic, limit } = this.state
-
     return (
       <div>
-
         <Header />
-        <SearchForm
-          // topic={topic}
-          // limit={limit}
-          onComplete={this.onComplete}
-          boardList={boardList}
-        />
-        < SearchResultList
-          boardList={boardList}
-        />
-
-
-
-        {/* <ul>
-          {this.state.boardList.map((post, i) => {
-            let { author, title, url, selftext_html } = post
-            let image = post.preview.images[0].source.url
-            return <li>
-              {author}<br />
-              <a href={url} target="_blank" >{title}</a>
-              <p>{selftext_html}</p>
-              <img src={image} />
-            </li>
-          })}
-        </ul> */}
+        <SearchForm onComplete={this.handleComplete} />
+        <SearchResultList boardList={this.state.boardList} />
       </div>
     )
   }
