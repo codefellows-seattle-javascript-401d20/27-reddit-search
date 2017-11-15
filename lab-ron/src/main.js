@@ -80,7 +80,6 @@ class SearchResultList extends React.Component {
     console.log(this.props.boardList)
 
     return (
-
       <ul>
         {this.props.boardList.map((post, i) => {
           console.log('post', post)
@@ -119,3 +118,15 @@ class App extends React.Component {
 let container = document.createElement('div')
 document.body.appendChild(container)
 ReactDOM.render(<App />, container)
+
+
+/*
+
+Should inerrit all search results through props
+This component does not need to have its own state!
+If there are topics in the application state it should display the unordered list
+Each list item in the unordered list should contain the following
+  an anchor tag with a href to the topic.url
+    inside the anchor a heading tag with the topic.title
+    inside the anchor a p tag with the number of topic.ups
+*/
