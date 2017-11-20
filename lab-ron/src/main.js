@@ -38,6 +38,13 @@ class SearchForm extends React.Component {
   handleSubmit(e) {
     e.preventDefault()
     let { topic, limit } = this.state
+
+    if (limit < 0)
+      this.setState({ limit: 0 })
+
+    if (limit > 100)
+      this.setState({ limit: 100 })
+
     superagent.get(`https://www.reddit.com/r/${topic}.json?limit=${limit}`)
       .then(res => {
         if (res.body) {
@@ -53,6 +60,7 @@ class SearchForm extends React.Component {
 
     return (
       <form onSubmit={this.handleSubmit}>
+        <p>Your search limit must be between 0 and 100</p>
         <input
           type='text'
           name='topic'
