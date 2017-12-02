@@ -1,4 +1,4 @@
-###Reddit Search
+### Reddit Search
 
 #### main.js
 #### Components
@@ -16,6 +16,4 @@ The successful call passes the results onto the application state.
 * unordered list
 
 The search results are passed on as props and displayed in an unordered list.
-
-(Mine is making a successful request and displaying information only it is doing it on page load.)
 ```
