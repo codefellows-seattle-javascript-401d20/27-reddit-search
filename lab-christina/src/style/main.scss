@@ -1,0 +1,22 @@
+$color-primary: white;
+
+html, body {
+  background: $color-primary;
+  color: #001B6C;
+  margin-left: auto;
+  margin-right: auto;
+  width: 90%;
+}
+
+h1 {
+  display: inline-block;
+  font-family: serif;
+}
+
+input {
+  display: block;
+}
+
+li {
+  list-style: none;
+}
